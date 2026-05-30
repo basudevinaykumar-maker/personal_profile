@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,12 +21,12 @@ const GITHUB_USERNAME = 'your-github-username';
 const GITHUB_TOKEN = 'your-github-token'; // Optional: for higher rate limits
 const LINKEDIN_PROFILE = 'your-profile'; // LinkedIn profile ID or URL
 
-// Fetch GitHub Activity
+
 async function fetchGitHubActivity() {
     try {
         const headers = GITHUB_TOKEN ? { 'Authorization': `token ${GITHUB_TOKEN}` } : {};
         
-        // Get user events
+        
         const eventsResponse = await fetch(
             `https://api.github.com/users/${GITHUB_USERNAME}/events/public?per_page=100`,
             { headers }
@@ -44,7 +44,6 @@ async function fetchGitHubActivity() {
     }
 }
 
-// Analyze GitHub Activity and Calculate Metrics
 function analyzeGitHubActivity(events) {
     const today = new Date();
     const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -54,7 +53,6 @@ function analyzeGitHubActivity(events) {
         return new Date(event.created_at) >= sevenDaysAgo;
     });
     
-    // Calculate streak
     let streak = 0;
     const activityByDay = {};
     
@@ -63,7 +61,7 @@ function analyzeGitHubActivity(events) {
         activityByDay[eventDate] = (activityByDay[eventDate] || 0) + 1;
     });
     
-    // Calculate current streak
+ 
     let currentDate = new Date();
     for (let i = 0; i < 365; i++) {
         const dateStr = currentDate.toLocaleDateString();
@@ -75,10 +73,10 @@ function analyzeGitHubActivity(events) {
         }
     }
     
-    // Calculate posting frequency (posts per week)
+    
     const frequency = (thisWeekEvents.length).toFixed(1);
     
-    // Find most active day
+   
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const activityByDayOfWeek = {};
     
@@ -91,18 +89,16 @@ function analyzeGitHubActivity(events) {
         activityByDayOfWeek[a] > activityByDayOfWeek[b] ? a : b
     )];
     
-    // Update UI
+    
     document.getElementById('postsThisWeek').textContent = thisWeekEvents.length;
     document.getElementById('weekProgressBar').style.width = Math.min(thisWeekEvents.length * 10, 100) + '%';
     document.getElementById('currentStreak').textContent = streak + ' days';
     document.getElementById('postingFrequency').textContent = frequency + '/week';
     document.getElementById('mostActiveDay').textContent = mostActiveDay;
     
-    // Update activity chart
     updateActivityChart(activityByDayOfWeek);
 }
-
-// Update Activity Chart with Real Data
+\
 function updateActivityChart(activityByDayOfWeek) {
     const chart = document.getElementById('activityChart');
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -119,7 +115,6 @@ function updateActivityChart(activityByDayOfWeek) {
     });
 }
 
-// Default Data for Testing
 function updateMetricsWithDefaultData() {
     document.getElementById('postsThisWeek').textContent = '5';
     document.getElementById('weekProgressBar').style.width = '50%';
@@ -128,7 +123,7 @@ function updateMetricsWithDefaultData() {
     document.getElementById('mostActiveDay').textContent = 'Friday';
 }
 
-// Load data when page loads
+
 window.addEventListener('load', function() {
     if (GITHUB_USERNAME !== 'your-github-username') {
         fetchGitHubActivity();
@@ -318,7 +313,6 @@ document.documentElement.style.scrollBehavior = 'smooth';
         });
     });
 
-    // Highlight active nav link on scroll
     window.addEventListener('scroll', function(){
         const fromTop = window.scrollY + offset() + 6;
         navLinks.forEach(link => {

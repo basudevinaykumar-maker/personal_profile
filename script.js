@@ -1,5 +1,6 @@
 const GITHUB_USERNAME = 'basudevinaykumar-maker';
 const GITHUB_TOKEN = ''; // Optional: add a GitHub personal access token for higher rate limits
+const TIMEZONE_OFFSET = 5.5; // IST is UTC+5:30, set this to your timezone offset in hours
 
 async function fetchGitHubActivity() {
     try {
@@ -26,14 +27,19 @@ function analyzeGitHubActivity(events) {
     let streak = 0;
     const activityByDay = {};
 
+    // Format dates consistently as YYYY-MM-DD with timezone adjustment
     events.forEach(event => {
-        const eventDate = new Date(event.created_at).toLocaleDateString();
-        activityByDay[eventDate] = (activityByDay[eventDate] || 0) + 1;
+        const eventDate = new Date(event.created_at);
+        eventDate.setHours(eventDate.getHours() + TIMEZONE_OFFSET);
+        const dateStr = eventDate.toISOString().split('T')[0];
+        activityByDay[dateStr] = (activityByDay[dateStr] || 0) + 1;
     });
 
+    // Calculate streak going backward from today with timezone adjustment
     let currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + TIMEZONE_OFFSET);
     for (let i = 0; i < 365; i++) {
-        const dateStr = currentDate.toLocaleDateString();
+        const dateStr = currentDate.toISOString().split('T')[0];
         if (activityByDay[dateStr]) {
             streak++;
             currentDate.setDate(currentDate.getDate() - 1);
@@ -42,10 +48,12 @@ function analyzeGitHubActivity(events) {
         }
     }
 
-    const frequency = thisWeekEvents.length.toFixed(1);
+    const frequency = (thisWeekEvents.length / 7).toFixed(1);
     const activityByDayOfWeek = {};
     events.slice(0, 100).forEach(event => {
-        const day = new Date(event.created_at).getDay();
+        const eventDate = new Date(event.created_at);
+        eventDate.setHours(eventDate.getHours() + TIMEZONE_OFFSET);
+        const day = eventDate.getDay();
         activityByDayOfWeek[day] = (activityByDayOfWeek[day] || 0) + 1;
     });
 
